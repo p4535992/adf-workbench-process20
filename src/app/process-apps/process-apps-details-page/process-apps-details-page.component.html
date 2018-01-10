@@ -1,0 +1,26 @@
+<adf-toolbar [color]="'accent'" *ngIf="appDef">
+  <adf-toolbar-title>
+    <span>{{ appDef.name }}</span>
+  </adf-toolbar-title>
+  <button mat-icon-button
+          matTooltip="Show Process Definitions included in app"
+          (click)="onShowProcDefs($event)">
+    <mat-icon>device_hub</mat-icon>
+  </button>
+  <adf-toolbar-divider></adf-toolbar-divider>
+  <button mat-icon-button
+          class="adf-viewer-close-button"
+          matTooltip="Close and go back to Process App list"
+          (click)="onGoBack($event)"
+          aria-label="Close">
+    <mat-icon>close</mat-icon>
+  </button>
+</adf-toolbar>
+<mat-card class="adf-card-container" *ngIf="appDef">
+  <mat-card-content>
+    <adf-card-view
+      [properties]="properties"
+      [editable]="false">
+    </adf-card-view>
+  </mat-card-content>
+</mat-card>
