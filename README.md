@@ -4,12 +4,10 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## Prerequisites
 
-The application is configured to login to both ACS and APS at the locations 
-specified in the **proxy.conf.json** file. 
+The application is configured to login to an APS server at the location specified in the **proxy.conf.json** file.
 
-If you only need to login to one of the backing services update the 
-**src/app/app.component.html** file and the `providers` property. 
-Use `'ECM'` for ACS and `'BPM'` for APS.
+If you also need to login to ACS, then update the **src/app/app.component.html** file and the `providers` property. 
+Use 'ECM' for ACS and 'BPM' for APS. Or use 'ALL' to login to both.
 
 ## Development server
 
