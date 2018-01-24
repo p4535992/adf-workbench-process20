@@ -26,7 +26,7 @@ export class AppComponent {
   }
 
   getCurrentUser() {
-    return this.authService.getEcmUsername();
+    return this.authService.getBpmUsername();
   }
 
   onLogout(event) {

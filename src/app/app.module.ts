@@ -13,6 +13,8 @@ import { ProcessAppsModule } from './process-apps/process-apps.module';
 import { ProcessAppsRoutingModule } from './process-apps/process-apps-routing.module';
 import { MyTasksModule } from './my-tasks/my-tasks.module';
 import { MyTasksRoutingModule } from './my-tasks/my-tasks-routing.module';
+import { MyProcessesModule } from './my-processes/my-processes.module';
+import { MyProcessesRoutingModule } from './my-processes/my-processes-routing.module';
 
 
 @NgModule({
@@ -29,7 +31,9 @@ import { MyTasksRoutingModule } from './my-tasks/my-tasks-routing.module';
     ProcessAppsModule,
     ProcessAppsRoutingModule,
     MyTasksModule,
-    MyTasksRoutingModule
+    MyTasksRoutingModule,
+    MyProcessesModule,
+    MyProcessesRoutingModule
   ],
   providers: [AppMenuService],
   bootstrap: [AppComponent]

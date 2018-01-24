@@ -13,6 +13,7 @@ import { AppDefinitionRepresentation } from 'alfresco-js-api';
 })
 export class StartProcessPageComponent implements OnInit {
   appDef: AppDefinitionRepresentation;
+
   @ViewChild(StartProcessInstanceComponent)
   startProcessForm: StartProcessInstanceComponent;
 
@@ -47,7 +48,7 @@ export class StartProcessPageComponent implements OnInit {
   onStartProcessInstance(procInstance: ProcessInstance) {
     console.log('Started process instance: ', procInstance.id);
     this.notificationService.openSnackMessage(
-      `Successfully started process instance ('${procInstance.id}') for Process App ${this.appName}`,
+      `Successfully started process instance ('${procInstance.id}') for Process App ${this.appDef.name}`,
       4000);
     this.startProcessForm.reset();
 
@@ -61,6 +62,6 @@ export class StartProcessPageComponent implements OnInit {
   onStartError(error: any) {
     console.log('There was an error starting process: ', error);
     this.notificationService.openSnackMessage(
-      `Failed to start process instance for Process App ${this.appName} error = ${error}`,
+      `Failed to start process instance for Process App ${this.appDef.name} error = ${error}`,
       4000);
   }}
