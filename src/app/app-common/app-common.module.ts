@@ -6,6 +6,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { CoreModule, TRANSLATION_PROVIDER } from '@alfresco/adf-core';
 import { ContentModule } from '@alfresco/adf-content-services';
 import { ProcessModule } from '@alfresco/adf-process-services';
+import { InsightsModule } from '@alfresco/adf-insights';
 
 export function modules() {
   return [
@@ -18,7 +19,8 @@ export function modules() {
     /* Alfresco ADF + Angular Material Components */
     CoreModule,
     ContentModule,
-    ProcessModule
+    ProcessModule,
+    InsightsModule
   ];
 }
 
