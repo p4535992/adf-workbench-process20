@@ -15,6 +15,7 @@ import { MyTasksModule } from './my-tasks/my-tasks.module';
 import { MyTasksRoutingModule } from './my-tasks/my-tasks-routing.module';
 import { MyProcessesModule } from './my-processes/my-processes.module';
 import { MyProcessesRoutingModule } from './my-processes/my-processes-routing.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import { MyProcessesRoutingModule } from './my-processes/my-processes-routing.mo
     MyTasksModule,
     MyTasksRoutingModule,
     MyProcessesModule,
-    MyProcessesRoutingModule
+    MyProcessesRoutingModule,
+    BrowserAnimationsModule
   ],
   providers: [AppMenuService],
   bootstrap: [AppComponent]

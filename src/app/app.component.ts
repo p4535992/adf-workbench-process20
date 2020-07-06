@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { AppMenuService, MenuItem } from './app-menu/app-menu.service';
 
 import { AuthenticationService } from '@alfresco/adf-core';
@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  title = 'adf-workbench-process30-src';
   appName = 'ADF Workbench';
   mainMenuItems;
   activeMenuItem$: Observable<MenuItem>;

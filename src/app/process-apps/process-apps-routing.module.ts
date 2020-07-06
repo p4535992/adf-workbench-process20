@@ -25,6 +25,7 @@ const routes: Routes = [ {
     { path: '', component: ProcessAppsListPageComponent, canActivate: [AuthGuardBpm] },
     { path: ':process-app-id', component: ProcessAppsDetailsPageComponent, canActivate: [AuthGuardBpm] },
     { path: ':process-app-id/procdef-list', component: ProcessDefinitionsListPageComponent, canActivate: [AuthGuardBpm] },
+    // tslint:disable-next-line: max-line-length
     { path: ':process-app-id/procdef-details/:process-def-id', component: ProcessDefinitionsDetailsPageComponent, canActivate: [AuthGuardBpm] },
     { path: ':process-app-id/start-process', component: StartProcessPageComponent, canActivate: [AuthGuardBpm] }
   ]

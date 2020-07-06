@@ -6,6 +6,7 @@ import { AppsProcessService, NotificationService } from '@alfresco/adf-core';
 
 import { AppDefinitionRepresentation } from 'alfresco-js-api';
 
+
 @Component({
   selector: 'app-start-process-page',
   templateUrl: './start-process-page.component.html',
@@ -14,7 +15,7 @@ import { AppDefinitionRepresentation } from 'alfresco-js-api';
 export class StartProcessPageComponent implements OnInit {
   appDef: AppDefinitionRepresentation;
 
-  @ViewChild(StartProcessInstanceComponent)
+  @ViewChild(StartProcessInstanceComponent, {static: false})
   startProcessForm: StartProcessInstanceComponent;
 
   constructor(private router: Router,

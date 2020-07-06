@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
 
-import { CoreModule, TRANSLATION_PROVIDER } from '@alfresco/adf-core';
+import { CoreModule } from '@alfresco/adf-core'; //MOD ABD TRANSLATION_PROVIDER
 import { ContentModule } from '@alfresco/adf-content-services';
 import { ProcessModule } from '@alfresco/adf-process-services';
 import { InsightsModule } from '@alfresco/adf-insights';
@@ -28,6 +28,8 @@ export function modules() {
   imports: modules(),
   declarations: [],
   providers: [
+    //MOD ABD
+    /*
     {
       provide: TRANSLATION_PROVIDER,
       multi: true,
@@ -36,6 +38,7 @@ export function modules() {
         source: 'assets'
       }
     }
+    */
   ],
   exports: modules()
 })

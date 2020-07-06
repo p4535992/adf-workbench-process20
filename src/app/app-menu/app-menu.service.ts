@@ -1,10 +1,11 @@
+
+import {map, filter} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/map';
+import { Observable ,  Subject } from 'rxjs';
+
+
 
 import { AuthenticationService } from '@alfresco/adf-core';
 
@@ -26,10 +27,10 @@ export class AppMenuService {
   constructor(private router: Router,
               private titleService: Title,
               private authService: AuthenticationService) {
-    this.activeMenuItem$ = this.router.events
-      .filter(e => e instanceof NavigationEnd)
-      .map(_ => this.router.routerState.root)
-      .map(route => {
+    this.activeMenuItem$ = this.router.events.pipe(
+      filter(e => e instanceof NavigationEnd),
+      map(_ => this.router.routerState.root),
+      map(route => {
         const active = this.lastRouteWithMenuItem(route.root);
 
         if (active && active.title) {
@@ -37,7 +38,7 @@ export class AppMenuService {
         }
 
         return active;
-      });
+      }),);
   }
 
   /**

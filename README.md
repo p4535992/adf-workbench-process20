@@ -1,28 +1,18 @@
-# ADF 2.0 Workbench
+# AdfWorkbenchProcess30Src
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.5.4.
-
-## Prerequisites
-
-The application is configured to login to an APS server at the location specified in the **proxy.conf.json** file.
-
-If you also need to login to ACS, then update the **src/app/app.component.html** file and the `providers` property. 
-Use 'ECM' for ACS and 'BPM' for APS. Or use 'ALL' to login to both.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.1.
 
 ## Development server
 
-Run `npm start` for a dev server. Navigate to `http://localhost:4200/`. 
-The app will automatically reload if you change any of the source files.
+Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
 ## Code scaffolding
 
-Run `ng generate component component-name` to generate a new component. 
-You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. 
-Use the `-prod` flag for a production build.
+Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
 
 ## Running unit tests
 
