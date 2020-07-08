@@ -4,6 +4,7 @@ import { AppMenuService, MenuItem } from './app-menu/app-menu.service';
 
 import { AuthenticationService } from '@alfresco/adf-core';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +25,7 @@ export class AppComponent {
     this.menuService.menuChanged.subscribe((any) => {
       this.updateMenu();
     });
+
   }
 
   getCurrentUser() {

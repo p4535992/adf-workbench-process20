@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
 
-import { CoreModule } from '@alfresco/adf-core'; //MOD ABD TRANSLATION_PROVIDER
+import { CoreModule, TRANSLATION_PROVIDER } from '@alfresco/adf-core'; //MOD ABD TRANSLATION_PROVIDER
 import { ContentModule } from '@alfresco/adf-content-services';
 import { ProcessModule } from '@alfresco/adf-process-services';
 import { InsightsModule } from '@alfresco/adf-insights';
@@ -28,7 +28,7 @@ export function modules() {
   imports: modules(),
   declarations: [],
   providers: [
-    //MOD ABD
+    //MOD ABD COMMENTARE ????
     /*
     {
       provide: TRANSLATION_PROVIDER,

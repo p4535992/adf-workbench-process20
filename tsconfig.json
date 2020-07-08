@@ -18,11 +18,21 @@
       "es2018",
       "dom"
     ],
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
+    "allowSyntheticDefaultImports": false,
+    "esModuleInterop": false,
+    "emitDecoratorMetadata": false,
+    "skipLibCheck": false,
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true
+  },
+  "paths": {
+    "rxjs": [
+      "node_modules/rxjs"
+    ],
+    "rxjs/*": [
+      "node_modules/rxjs/*"
+    ]
   }
 }
