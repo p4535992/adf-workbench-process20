@@ -3,10 +3,13 @@ import { CommonModule } from '@angular/common';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
 
-import { CoreModule, TRANSLATION_PROVIDER } from '@alfresco/adf-core'; //MOD ABD TRANSLATION_PROVIDER
+import { CoreModule, TRANSLATION_PROVIDER, TranslationService, TranslateLoaderService } from '@alfresco/adf-core'; //MOD ABD TRANSLATION_PROVIDER
 import { ContentModule } from '@alfresco/adf-content-services';
 import { ProcessModule } from '@alfresco/adf-process-services';
 import { InsightsModule } from '@alfresco/adf-insights';
+import { HttpClient } from '@angular/common/http';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 
 export function modules() {
   return [
@@ -20,12 +23,15 @@ export function modules() {
     CoreModule,
     ContentModule,
     ProcessModule,
-    InsightsModule
+    InsightsModule,
+
   ];
 }
 
 @NgModule({
-  imports: modules(),
+  imports: [
+    modules(),
+  ],
   declarations: [],
   providers: [
     //MOD ABD COMMENTARE ????
@@ -37,9 +43,25 @@ export function modules() {
         name: 'app',
         source: 'assets'
       }
-    }
+    },
     */
+    {
+      provide: TRANSLATION_PROVIDER,
+      multi: true,
+      useValue: {
+          name: 'app',
+          source: 'assets'
+      },
+      useClass: TranslateLoaderService
+    },
+    {
+      provide: TranslateLoader,
+      useClass: TranslateLoaderService
+    },
+    //END MOD ABD
+
   ],
   exports: modules()
 })
 export class AppCommonModule { }
+

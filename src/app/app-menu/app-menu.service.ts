@@ -1,13 +1,15 @@
 
 import {map, filter} from 'rxjs/operators';
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, Injector } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { Observable ,  Subject } from 'rxjs';
 
 
 
-import { AuthenticationService } from '@alfresco/adf-core';
+import { AuthenticationService, AlfrescoApiService } from '@alfresco/adf-core';
+import { AbdAlfrescoAuthenticationService } from '../app-common/auth/abd-alfresco-authentication.service';
+import { AbdLogService } from '../app-common/log/abd-log.service';
 
 /* Data for a menu item */
 export class MenuItem {
@@ -24,9 +26,19 @@ export class AppMenuService {
   /* Keep track of which menu item is currently being active/selected */
   activeMenuItem$: Observable<MenuItem>;
 
+  authService: AuthenticationService;
+
   constructor(private router: Router,
               private titleService: Title,
-              private authService: AuthenticationService) {
+              //@Inject(AuthenticationService)authService: AuthenticationService,
+              private inj: Injector,
+              //private readonly authenticationService: AbdAlfrescoAuthenticationService,
+              //private readonly authService: AbdAlfrescoAuthenticationService,
+              //private readonly logService: AbdLogService,
+              private alfrescoApi: AlfrescoApiService,
+              ) {
+    debugger
+    this.authService = this.inj.get(AuthenticationService);
     this.activeMenuItem$ = this.router.events.pipe(
       filter(e => e instanceof NavigationEnd),
       map(_ => this.router.routerState.root),
@@ -38,12 +50,12 @@ export class AppMenuService {
         }
 
         return active;
-      }),);
+      }), );
   }
 
   /**
    * Get the MenuItem array that should be displayed.
-   * @returns {MenuItem[]}
+   * //@returns {MenuItem[]}
    */
   getMenuItems(): MenuItem[] {
     return this.router.config
@@ -88,7 +100,7 @@ export class AppMenuService {
     do {
       lastMenu = this.extractMenu(route) || lastMenu;
     }
-    while ((route = route.firstChild));
+    while ((route === route.firstChild));
 
     return lastMenu;
   }

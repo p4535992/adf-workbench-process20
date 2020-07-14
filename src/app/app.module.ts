@@ -16,10 +16,16 @@ import { MyTasksRoutingModule } from './my-tasks/my-tasks-routing.module';
 import { MyProcessesModule } from './my-processes/my-processes.module';
 import { MyProcessesRoutingModule } from './my-processes/my-processes-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { HttpClient } from '@angular/common/http';
+import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { TRANSLATION_PROVIDER } from '@alfresco/adf-core';
+import { TRANSLATION_PROVIDER, AppConfigService, DebugAppConfigService, TranslationService, TranslateLoaderService, AuthBearerInterceptor, AuthenticationService } from '@alfresco/adf-core';
+import { AbdAlfrescoAuthenticationService } from './app-common/auth/abd-alfresco-authentication.service';
+
+// required for AOT compilation
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http);
+}
 
 @NgModule({
   declarations: [
@@ -40,37 +46,76 @@ import { TRANSLATION_PROVIDER } from '@alfresco/adf-core';
     MyProcessesRoutingModule,
     BrowserAnimationsModule,
     //MOD ABD
+    // ngx-translate and the loader module
+    HttpClientModule,
+
+    TranslateModule.forRoot(),
     /*
-    TranslateModule.forRoot({
-      loader: {
-          provide: TranslateLoader,
-          useFactory: (http: HttpClient) => new TranslateHttpLoader(http, '/assets/i18n/', '.json'),
-          deps: [HttpClient]
+      {
+        loader: {
+          provide: TRANSLATION_PROVIDER,
+          multi: true,
+          useValue: {
+              name: 'app',
+              source: 'assets'
+          }
+        }
       }
-    }),
+    ),
     */
     // END MOD ABD
   ],
   providers: [
     AppMenuService,
-
-    //MOD ABD https://github.com/ngx-translate/core/issues/186
-    /*
+    {
+        provide: TRANSLATION_PROVIDER,
+        multi: true,
+        useValue: {
+            name: 'app',
+            source: 'assets'
+        },
+        useClass: TranslateLoaderService
+    },
     {
       provide: TranslateLoader,
+      useClass: TranslateLoaderService
+    },
+    /*
+    {
+      provide: TRANSLATION_PROVIDER,
+      multi: true,
+      //useValue: {
+      //  name: 'app',
+      //  source: 'assets'
+      //},
       useFactory: (http: HttpClient) => new TranslateHttpLoader(http, '/assets/i18n/', '.json'),
+      useExisting: true,
       deps: [HttpClient]
-    }
+    },
     */
-   {
-    provide: TRANSLATION_PROVIDER,
-    multi: true,
-    useValue: {
-      name: 'app',
-      source: 'assets'
-    }
-   }
-    //END MOD ABD
+   /*
+    {
+      provide: TranslateLoader,
+      // useFactory: (http: HttpClient) => new TranslateHttpLoader(http, '/assets/i18n/', '.json'),
+      useFactory: HttpLoaderFactory,
+      deps: [HttpClient]
+    },
+    */
+
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthBearerInterceptor,
+      multi: true
+    },
+    /*
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    },
+    */
+   AuthenticationService,
+   AbdAlfrescoAuthenticationService,
   ],
   bootstrap: [AppComponent]
 })

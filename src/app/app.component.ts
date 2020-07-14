@@ -5,6 +5,8 @@ import { AppMenuService, MenuItem } from './app-menu/app-menu.service';
 import { AuthenticationService } from '@alfresco/adf-core';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { AbdAlfrescoAuthenticationService } from './app-common/auth/abd-alfresco-authentication.service';
+import { AbdLogService } from './app-common/log/abd-log.service';
 
 @Component({
   selector: 'app-root',
@@ -19,10 +21,17 @@ export class AppComponent {
 
   constructor(private router: Router,
               private menuService: AppMenuService,
-              private authService: AuthenticationService) {
+              //private authService: AuthenticationService
+              private translate: TranslateService,
+              private authService: AbdAlfrescoAuthenticationService,
+              private logService: AbdLogService
+              ) {
+    debugger
+    translate.setDefaultLang('en');
+
     this.updateMenu();
 
-    this.menuService.menuChanged.subscribe((any) => {
+    this.menuService.menuChanged.subscribe((response) => {
       this.updateMenu();
     });
 
@@ -44,7 +53,8 @@ export class AppComponent {
           if (error && error.response && error.response.status === 401) {
             this.navigateToLogin();
           } else {
-            console.log('An unknown error occurred while logging out', error);
+            //console.log('An unknown error occurred while logging out', error);
+            this.logService.error('An unknown error occurred while logging out', error);
             this.navigateToLogin();
           }
         }
