@@ -19,8 +19,19 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { TRANSLATION_PROVIDER, AppConfigService, DebugAppConfigService, TranslationService, TranslateLoaderService, AuthBearerInterceptor, AuthenticationService } from '@alfresco/adf-core';
-import { AbdAlfrescoAuthenticationService } from './app-common/auth/abd-alfresco-authentication.service';
+import {
+  TRANSLATION_PROVIDER,
+  AppConfigService,
+  DebugAppConfigService,
+  TranslationService,
+  TranslateLoaderService,
+  AuthBearerInterceptor,
+  AuthenticationService,
+  AlfrescoApiService,
+  StorageService,
+  LogService,
+  NotificationService,
+  UserPreferencesService } from '@alfresco/adf-core';
 
 // required for AOT compilation
 export function HttpLoaderFactory(http: HttpClient) {
@@ -45,7 +56,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     MyProcessesModule,
     MyProcessesRoutingModule,
     BrowserAnimationsModule,
-    //MOD ABD
+    //MOD 4535992
     // ngx-translate and the loader module
     HttpClientModule,
 
@@ -63,7 +74,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       }
     ),
     */
-    // END MOD ABD
+    // END MOD 4535992
   ],
   providers: [
     AppMenuService,
@@ -114,8 +125,13 @@ export function HttpLoaderFactory(http: HttpClient) {
       multi: true
     },
     */
-   AuthenticationService,
-   AbdAlfrescoAuthenticationService,
+    AlfrescoApiService,
+    StorageService,
+    LogService,
+    NotificationService,
+    TranslateService,
+    TranslationService,
+    UserPreferencesService,
   ],
   bootstrap: [AppComponent]
 })

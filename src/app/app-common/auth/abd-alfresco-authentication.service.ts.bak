@@ -9,37 +9,56 @@ import { AppConfigService, AppConfigValues } from '../app-config/app-config.serv
 import { JwtHelperService } from './jwt-helper.service';
 import { StorageService } from './storage.service';
 */
-import { UserRepresentation } from '@alfresco/js-api';
 import { map, catchError, tap } from 'rxjs/operators';
 import { HttpHeaders } from '@angular/common/http';
-import { RedirectionModel, AppConfigService, StorageService, AlfrescoApiService, CookieService, LogService, AppConfigValues, JwtHelperService } from '@alfresco/adf-core';
-
+import {
+  RedirectionModel,
+  AppConfigService,
+  StorageService,
+  AlfrescoApiService,
+  CookieService,
+  LogService,
+  AppConfigValues,
+  JwtHelperService,
+  AuthenticationService,
+  ExternalAlfrescoApiService} from '@alfresco/adf-core';
+import {
+  UserRepresentation,
+  ContentApi,
+  Core,
+  Activiti,
+  SearchApi,
+  Node,
+  AlfrescoApiCompatibility,
+  AlfrescoApiConfig } from '@alfresco/js-api';
 
 const REMEMBER_ME_COOKIE_KEY = 'ALFRESCO_REMEMBER_ME';
 const REMEMBER_ME_UNTIL = 1000 * 60 * 60 * 24 * 30;
 
 @Injectable()
-export class AbdAlfrescoAuthenticationService {
+export class AbdAlfrescoAuthenticationService extends  AuthenticationService {
 
-    private redirectUrl: RedirectionModel = null;
+    private redirectUrl2: RedirectionModel = null;
 
-    private bearerExcludedUrls: string[] = ['auth/realms', 'resources/', 'assets/'];
-
+    private bearerExcludedUrls2: string[] = ['auth/realms', 'resources/', 'assets/'];
     onLogin: Subject<any> = new Subject<any>();
     onLogout: Subject<any> = new Subject<any>();
 
     constructor(
-        private appConfig: AppConfigService,
-        private storageService: StorageService,
-        private alfrescoApi: AlfrescoApiService,
-        private cookie: CookieService,
-        private logService: LogService) {
+      private readonly appConfig2: AppConfigService,
+      private readonly storageService2: StorageService,
+      private readonly alfrescoApi2: AlfrescoApiService,
+      private readonly cookie2: CookieService,
+      private readonly logService2: LogService,
+      private readonly externalAlfrescoApi2: ExternalAlfrescoApiService,
+        ) {
+        super(appConfig2, storageService2, alfrescoApi2, cookie2, logService2);
     }
 
     // =============================================
     // STATIC
     // ======================================================
-
+    /*
     public static isLoggedIn2(alfrescoApi: AlfrescoApiService, cookie: CookieService): boolean {
         if (!AbdAlfrescoAuthenticationService.isOauth2(alfrescoApi) &&
         cookie.isEnabled() && !AbdAlfrescoAuthenticationService.isRememberMeSet2(cookie)) {
@@ -106,16 +125,17 @@ export class AbdAlfrescoAuthenticationService {
     public static isALLProvider2(alfrescoApi: AlfrescoApiService): boolean {
         return alfrescoApi.getInstance().isEcmBpmConfiguration();
     }
+    */
 
     /**
      * Checks if the user logged in.
      * @returns True if logged in, false otherwise
      */
     public isLoggedIn(): boolean {
-        if (!this.isOauth() && this.cookie.isEnabled() && !this.isRememberMeSet()) {
+        if (!this.isOauth() && this.cookie2.isEnabled() && !this.isRememberMeSet()) {
             return false;
         }
-        return this.alfrescoApi.getInstance().isLoggedIn();
+        return this.alfrescoApi2.getInstance().isLoggedIn();
     }
 
     public isLoggedInWith(provider: string): boolean {
@@ -133,11 +153,12 @@ export class AbdAlfrescoAuthenticationService {
      * @returns True if supported, false otherwise
      */
     public isOauth(): boolean {
-        return this.alfrescoApi.getInstance().isOauthConfiguration();
+      return false;//return this.externalAlfrescoApi2.getInstance().isOauthConfiguration();
+      //return this.alfrescoApi2.getInstance().isOauthConfiguration();
     }
 
     public isPublicUrl(): boolean {
-        return this.alfrescoApi.getInstance().isPublicUrl();
+        return this.alfrescoApi2.getInstance().isPublicUrl();
     }
 
     /**
@@ -145,7 +166,7 @@ export class AbdAlfrescoAuthenticationService {
      * @returns True if supported, false otherwise
      */
     public isECMProvider(): boolean {
-        return this.alfrescoApi.getInstance().isEcmConfiguration();
+        return this.alfrescoApi2.getInstance().isEcmConfiguration();
     }
 
     /**
@@ -153,7 +174,7 @@ export class AbdAlfrescoAuthenticationService {
      * @returns True if supported, false otherwise
      */
     public isBPMProvider(): boolean {
-        return this.alfrescoApi.getInstance().isBpmConfiguration();
+        return this.alfrescoApi2.getInstance().isBpmConfiguration();
     }
 
     /**
@@ -161,7 +182,7 @@ export class AbdAlfrescoAuthenticationService {
      * @returns True if both are supported, false otherwise
      */
     public isALLProvider(): boolean {
-        return this.alfrescoApi.getInstance().isEcmBpmConfiguration();
+        return this.alfrescoApi2.getInstance().isEcmBpmConfiguration();
     }
 
     /**
@@ -172,13 +193,13 @@ export class AbdAlfrescoAuthenticationService {
      * @returns Object with auth type ("ECM", "BPM" or "ALL") and auth ticket
      */
     public login(username: string, password: string, rememberMe: boolean): Observable<{ type: string, ticket: any }> {
-        return from(this.alfrescoApi.getInstance().login(username, password))
+        return from(this.alfrescoApi2.getInstance().login(username, password))
             .pipe(
                 map((response: any) => {
-                    this.saveRememberMeCookie(rememberMe);
+                    this.saveRememberMeCookie2(rememberMe);
                     this.onLogin.next(response);
                     return {
-                        type: this.appConfig.get(AppConfigValues.PROVIDERS),
+                        type: this.appConfig2.get(AppConfigValues.PROVIDERS),
                         ticket: response
                     };
                 }),
@@ -190,14 +211,14 @@ export class AbdAlfrescoAuthenticationService {
      * Logs the user in with SSO
      */
     public ssoImplicitLogin() {
-        this.alfrescoApi.getInstance().implicitLogin();
+        this.alfrescoApi2.getInstance().implicitLogin();
     }
 
     /**
      * Saves the "remember me" cookie as either a long-life cookie or a session cookie.
      * @param rememberMe Enables a long-life cookie
      */
-    private saveRememberMeCookie(rememberMe: boolean): void {
+    private saveRememberMeCookie2(rememberMe: boolean): void {
         let expiration = null;
 
         if (rememberMe) {
@@ -206,7 +227,7 @@ export class AbdAlfrescoAuthenticationService {
             const expireTime = time + REMEMBER_ME_UNTIL;
             expiration.setTime(expireTime);
         }
-        this.cookie.setItem(REMEMBER_ME_COOKIE_KEY, '1', expiration, null);
+        this.cookie2.setItem(REMEMBER_ME_COOKIE_KEY, '1', expiration, null);
     }
 
     /**
@@ -214,7 +235,7 @@ export class AbdAlfrescoAuthenticationService {
      * @returns True if set, false otherwise
      */
     public isRememberMeSet(): boolean {
-        return (this.cookie.getItem(REMEMBER_ME_COOKIE_KEY) !== null);
+        return (this.cookie2.getItem(REMEMBER_ME_COOKIE_KEY) !== null);
     }
 
     /**
@@ -222,7 +243,7 @@ export class AbdAlfrescoAuthenticationService {
      * @returns Response event called when logout is complete
      */
     public logout() {
-        return from(this.callApiLogout())
+        return from(this.callApiLogout2())
             .pipe(
                 tap((response) => {
                     this.onLogout.next(response);
@@ -232,9 +253,9 @@ export class AbdAlfrescoAuthenticationService {
             );
     }
 
-    private callApiLogout(): Promise<any> {
-        if (this.alfrescoApi.getInstance()) {
-            return this.alfrescoApi.getInstance().logout();
+    private callApiLogout2(): Promise<any> {
+        if (this.alfrescoApi2.getInstance()) {
+            return this.alfrescoApi2.getInstance().logout();
         }
         return Promise.resolve();
     }
@@ -244,7 +265,7 @@ export class AbdAlfrescoAuthenticationService {
      * @returns The ticket or `null` if none was found
      */
     public getTicketEcm(): string | null {
-        return this.alfrescoApi.getInstance().getTicketEcm();
+        return this.alfrescoApi2.getInstance().getTicketEcm();
     }
 
     /**
@@ -252,7 +273,7 @@ export class AbdAlfrescoAuthenticationService {
      * @returns The ticket or `null` if none was found
      */
     public getTicketBpm(): string | null {
-        return this.alfrescoApi.getInstance().getTicketBpm();
+        return this.alfrescoApi2.getInstance().getTicketBpm();
     }
 
     /**
@@ -260,7 +281,7 @@ export class AbdAlfrescoAuthenticationService {
      * @returns The ticket or `null` if none was found
      */
     public getTicketEcmBase64(): string | null {
-        const ticket = this.alfrescoApi.getInstance().getTicketEcm();
+        const ticket = this.alfrescoApi2.getInstance().getTicketEcm();
         if (ticket) {
             return 'Basic ' + btoa(ticket);
         }
@@ -273,10 +294,10 @@ export class AbdAlfrescoAuthenticationService {
      */
     public isEcmLoggedIn(): boolean {
         if (this.isECMProvider() || this.isALLProvider()) {
-            if (!this.isOauth() && this.cookie.isEnabled() && !this.isRememberMeSet()) {
+            if (!this.isOauth() && this.cookie2.isEnabled() && !this.isRememberMeSet()) {
                 return false;
             }
-            return this.alfrescoApi.getInstance().isEcmLoggedIn();
+            return this.alfrescoApi2.getInstance().isEcmLoggedIn();
         }
         return false;
     }
@@ -287,10 +308,10 @@ export class AbdAlfrescoAuthenticationService {
      */
     public isBpmLoggedIn(): boolean {
         if (this.isBPMProvider() || this.isALLProvider()) {
-            if (!this.isOauth() && this.cookie.isEnabled() && !this.isRememberMeSet()) {
+            if (!this.isOauth() && this.cookie2.isEnabled() && !this.isRememberMeSet()) {
                 return false;
             }
-            return this.alfrescoApi.getInstance().isBpmLoggedIn();
+            return this.alfrescoApi2.getInstance().isBpmLoggedIn();
         }
         return false;
     }
@@ -300,7 +321,7 @@ export class AbdAlfrescoAuthenticationService {
      * @returns The ECM username
      */
     public getEcmUsername(): string {
-        return this.alfrescoApi.getInstance().getEcmUsername();
+        return this.alfrescoApi2.getInstance().getEcmUsername();
     }
 
     /**
@@ -308,22 +329,22 @@ export class AbdAlfrescoAuthenticationService {
      * @returns The BPM username
      */
     public getBpmUsername(): string {
-        return this.alfrescoApi.getInstance().getBpmUsername();
+        return this.alfrescoApi2.getInstance().getBpmUsername();
     }
 
     /** Sets the URL to redirect to after login.
      * @param url URL to redirect to
      */
     public setRedirect(url: RedirectionModel) {
-        this.redirectUrl = url;
+        this.redirectUrl2 = url;
     }
 
     /** Gets the URL to redirect to after login.
      * @returns The redirect URL
      */
     public getRedirect(): string {
-        const provider = <string> this.appConfig.get(AppConfigValues.PROVIDERS);
-        return this.hasValidRedirection(provider) ? this.redirectUrl.url : null;
+        const provider: any = this.appConfig2.get(AppConfigValues.PROVIDERS);
+        return this.hasValidRedirection2(provider) ? this.redirectUrl2.url : null;
     }
 
     /**
@@ -331,15 +352,15 @@ export class AbdAlfrescoAuthenticationService {
      * @returns User information
      */
     public getBpmLoggedUser(): Observable<UserRepresentation> {
-        return from(this.alfrescoApi.getInstance().activiti.profileApi.getProfile());
+        return from(this.alfrescoApi2.getInstance().activiti.profileApi.getProfile());
     }
 
-    private hasValidRedirection(provider: string): boolean {
-        return this.redirectUrl && (this.redirectUrl.provider === provider || this.hasSelectedProviderAll(provider));
+    private hasValidRedirection2(provider: string): boolean {
+        return this.redirectUrl2 && (this.redirectUrl2.provider === provider || this.hasSelectedProviderAll2(provider));
     }
 
-    private hasSelectedProviderAll(provider: string): boolean {
-        return this.redirectUrl && (this.redirectUrl.provider === 'ALL' || provider === 'ALL');
+    private hasSelectedProviderAll2(provider: string): boolean {
+        return this.redirectUrl2 && (this.redirectUrl2.provider === 'ALL' || provider === 'ALL');
     }
 
     /**
@@ -348,7 +369,7 @@ export class AbdAlfrescoAuthenticationService {
      * @returns Object representing the error message
      */
     public handleError(error: any): Observable<any> {
-        this.logService.error('Error when logging in', error);
+        this.logService2.error('Error when logging in', error);
         return throwError(error || 'Server error');
     }
 
@@ -357,7 +378,7 @@ export class AbdAlfrescoAuthenticationService {
      * @returns Array of URL strings
      */
     public getBearerExcludedUrls(): string[] {
-        return this.bearerExcludedUrls;
+        return this.bearerExcludedUrls2;
     }
 
     /**
@@ -365,7 +386,7 @@ export class AbdAlfrescoAuthenticationService {
      * @returns Auth token string
      */
     public getToken(): string {
-        return this.storageService.getItem(JwtHelperService.USER_ACCESS_TOKEN);
+        return this.storageService2.getItem(JwtHelperService.USER_ACCESS_TOKEN);
     }
 
     /**

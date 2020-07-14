@@ -4,12 +4,7 @@ import { Injectable, Inject, Injector } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { Observable ,  Subject } from 'rxjs';
-
-
-
 import { AuthenticationService, AlfrescoApiService } from '@alfresco/adf-core';
-import { AbdAlfrescoAuthenticationService } from '../app-common/auth/abd-alfresco-authentication.service';
-import { AbdLogService } from '../app-common/log/abd-log.service';
 
 /* Data for a menu item */
 export class MenuItem {
@@ -26,19 +21,14 @@ export class AppMenuService {
   /* Keep track of which menu item is currently being active/selected */
   activeMenuItem$: Observable<MenuItem>;
 
-  authService: AuthenticationService;
+  //authService: AuthenticationService;
 
   constructor(private router: Router,
               private titleService: Title,
-              //@Inject(AuthenticationService)authService: AuthenticationService,
-              private inj: Injector,
-              //private readonly authenticationService: AbdAlfrescoAuthenticationService,
-              //private readonly authService: AbdAlfrescoAuthenticationService,
-              //private readonly logService: AbdLogService,
-              private alfrescoApi: AlfrescoApiService,
+              private authService: AuthenticationService,
               ) {
     debugger
-    this.authService = this.inj.get(AuthenticationService);
+    //this.authService = this.inj.get(AuthenticationService);
     this.activeMenuItem$ = this.router.events.pipe(
       filter(e => e instanceof NavigationEnd),
       map(_ => this.router.routerState.root),
